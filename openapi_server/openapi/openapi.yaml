@@ -1,0 +1,103 @@
+openapi: 3.0.0
+info:
+  description: A simple API to publishand track ops happenings
+  title: OpsLog API
+  version: 1.0.0
+servers:
+- url: https://example.io/v1
+security:
+- BasicAuth: []
+paths:
+  /events:
+    get:
+      description: Returns a list of events
+      operationId: events_get
+      parameters:
+      - description: Limits the number of items on a page
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: Specifies the page number of Events to be displayed
+        explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Event'
+                type: array
+          description: Returns a list of events
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+          description: Invalid request
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+    post:
+      description: Create a new event
+      operationId: events_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Event'
+        required: true
+      responses:
+        "200":
+          description: Successfully created a new event
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+          description: Invalid request
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+components:
+  responses:
+    "400Error":
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/inline_response_400'
+      description: Invalid request
+  schemas:
+    Event:
+      example:
+        cluster: cluster
+        id: 0
+        message: message
+      properties:
+        id:
+          title: id
+          type: integer
+        cluster:
+          title: cluster
+          type: string
+        message:
+          title: message
+          type: string
+      title: Event
+    inline_response_400:
+      properties:
+        message:
+          title: message
+          type: string
+      title: inline_response_400
+      type: object
+  securitySchemes:
+    BasicAuth:
+      scheme: basic
+      type: http
+      x-basicInfoFunc: openapi_server.controllers.security_controller_.info_from_BasicAuth
