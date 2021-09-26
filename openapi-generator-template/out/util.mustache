@@ -2,7 +2,7 @@ import datetime
 
 import six
 import typing
-from openapi_server import typing_utils
+from {{packageName}} import typing_utils
 
 
 def _deserialize(data, klass):
@@ -14,7 +14,6 @@ def _deserialize(data, klass):
     :return: object.
     """
     if data is None:
-        print("DATA IS NOOOOOOONE")
         return None
 
     if klass in six.integer_types or klass in (float, str, bool, bytearray):

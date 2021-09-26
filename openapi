@@ -1,0 +1,83 @@
+
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: OpsLog API
+  description: A simple API to publishand track ops happenings
+
+servers:
+  - url: https://example.io/v1
+
+
+
+paths:
+  /events:
+    get:
+      description: Returns a list of events
+      parameters:
+        - name: limit
+          in: query
+          description: Limits the number of items on a page
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: Specifies the page number of Events to be displayed
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "Returns a list of events"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Event"
+        '400':
+          $ref: "#/components/responses/400Error"
+
+    post:
+      description: Create a new event
+      security:
+      - BasicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Event"
+              x-body-name: event # really important, otherwise we get connexion bug  https://github.com/zalando/connexion/issues/1241
+
+      responses:
+        '200':
+          description: Successfully created a new event
+
+        '400':
+          $ref: "#/components/responses/400Error"
+components:
+  schemas:
+    Event:
+      properties:
+        id:
+          type: integer
+        cluster:
+          type: string
+        message:
+          type: string
+  responses:
+    400Error:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            type: object 
+            properties:
+              message:
+                type: string
+
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+          

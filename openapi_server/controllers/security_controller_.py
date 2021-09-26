@@ -16,6 +16,7 @@ def info_from_BasicAuth(username, password, required_scopes):
     :return: Information attached to user or None if credentials are invalid or does not allow access to called API
     :rtype: dict | None
     """
-    return {'uid': 'user_id'}
-
-
+    if username == "test" and password == "test":
+        return {'uid': 'user_id'}
+    else:
+        return None
