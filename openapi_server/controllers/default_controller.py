@@ -1,10 +1,9 @@
 import connexion
 import six
 
-from openapi_server.models.event import Event  # noqa: E501
+from openapi_server.services import event_service as EventService
 from openapi_server.models.inline_response400 import InlineResponse400  # noqa: E501
 from openapi_server import util
-from openapi_server.db import db
 
 
 def events_get(limit=None, offset=None):  # noqa: E501
@@ -19,18 +18,8 @@ def events_get(limit=None, offset=None):  # noqa: E501
 
     :rtype: List[Event]
     """
-    events = Event.query.all()
-    print("length of events is: " + str(len(events)))
-    print(events[0].to_str())
-    events_json = []
-    for event in events:
-        print(event)
-        print(event.to_dict())
-        events_json.append(event.to_dict())
-    print("All events")
-    print(events_json)
-    return events_json
-
+    events = EventService.get_all()
+    return events
 
 def events_post(event=None):  # noqa: E501
     """events_post
@@ -50,7 +39,6 @@ def events_post(event=None):  # noqa: E501
         # https://github.com/OpenAPITools/openapi-generator/issues/1666
         raise TypeError("events_post got called without an event")
     if connexion.request.is_json:
-        event = Event.from_dict(connexion.request.get_json()) # noqa: E501
-        db.session.add(event)
-        db.session.commit()
+        EventService.add_event(connexion.request.get_json())
+  
     return 'Added event'

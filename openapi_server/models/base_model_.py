@@ -28,7 +28,6 @@ class Model(object):
 
         :rtype: dict
         """
-        print("ended up here")
 
         result = {}
         for attr, _ in six.iteritems(self.openapi_types):
