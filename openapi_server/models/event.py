@@ -45,14 +45,10 @@ class Event(db.Model,Model):
         :param message: The message of this Event.  # noqa: E501
         :type message: str
         """
-        #print("cluster: " + cluster)
 
         self._id = id
         self._cluster = cluster
         self._message = message
-        
-        #db.session.add(self)
-        #db.session.commit()
 
     @classmethod
     def from_dict(cls, dikt) -> 'Event':
